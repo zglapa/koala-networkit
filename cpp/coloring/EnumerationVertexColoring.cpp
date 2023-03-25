@@ -23,11 +23,11 @@ void EnumerationVertexColoring::forwards() {
     for (int i = r; i < n; ++i) {
         if (r < i)
             determine_feasible_colors(i);
-        if (feasible_colors[ordering[i]].empty()) {
+        if (feasible_colors[i].empty()) {
             r = i;
             return;
         }
-        current_solution[ordering[i]] = *feasible_colors[ordering[i]].begin();
+        current_solution[ordering[i]] = *feasible_colors[i].begin();
     }
     best_solution = current_solution;
     int maximal_color = 0;
@@ -55,8 +55,8 @@ void EnumerationVertexColoring::backwards() {
     while (!current_predecessors.empty()) {
         int i = *current_predecessors.begin();
         current_predecessors.erase(i);
-        feasible_colors[ordering[i]].erase(current_solution[ordering[i]]);
-        if (!feasible_colors[ordering[i]].empty()) {
+        feasible_colors[i].erase(current_solution[ordering[i]]);
+        if (!feasible_colors[i].empty()) {
             r = i;
             return;
         }
@@ -83,9 +83,7 @@ void EnumerationVertexColoring::determine_feasible_colors(int i) {
             feasible_colors_for_node.erase(current_solution[ordering[j]]);
         }
     }
-    if (feasible_colors.find(ordering[i]) != feasible_colors.end())
-        feasible_colors.erase(ordering[i]);
-    feasible_colors.insert(std::make_pair(ordering[i], feasible_colors_for_node));
+    feasible_colors[i] = feasible_colors_for_node;
 }
 
 std::vector<NetworKit::node>
@@ -173,8 +171,8 @@ void BrownsOrdinaryEnumerationVertexColoring::run() {
 
     r = 0;
     ub = upper_bound + 1;
-
-    feasible_colors[ordering[0]].insert(1);
+    feasible_colors.resize(n);
+    feasible_colors[0].insert(1);
 
     while (true) {
         forwards();
@@ -239,8 +237,9 @@ void ChristofidesEnumerationVertexColoring::run() {
 
     r = 0;
     ub = upper_bound + 1;
-
-    feasible_colors[ordering[0]].insert(1);
+    
+    feasible_colors.resize(n);
+    feasible_colors[0].insert(1);
 
     while (true) {
         forwards();
@@ -456,8 +455,8 @@ void BrelazEnumerationVertexColoring::backwards() {
         int i = *current_predecessors.begin();
         current_predecessors.erase(i);
         determine_current_predecessors(i);
-        feasible_colors[ordering[i]].erase(current_solution[ordering[i]]);
-        if (!feasible_colors[ordering[i]].empty()) {
+        feasible_colors[i].erase(current_solution[ordering[i]]);
+        if (!feasible_colors[i].empty()) {
             r = i;
             return;
         }
@@ -474,7 +473,8 @@ void BrelazEnumerationVertexColoring::run() {
         r = 0;
         ub = upper_bound;
 
-        feasible_colors[ordering[0]].insert(1);
+        feasible_colors.resize(n);
+        feasible_colors[0].insert(1);
 
         while (true) {
             forwards();
@@ -517,13 +517,13 @@ void KormanEnumerationVertexColoring::forwards() {
 
         determine_feasible_colors(new_ordering.size()-1);
 
-        if (feasible_colors[ordering[i]].empty()) {
+        if (feasible_colors[i].empty()) {
             r = i;
             return;
         }
 
         is_colored[i] = true;
-        current_solution[ordering[i]] = *feasible_colors[ordering[i]].begin();
+        current_solution[ordering[i]] = *feasible_colors[i].begin();
 
         graph->forNeighborsOf(ordering[i], [&](NetworKit::node v) {
             auto j = position[v];
@@ -557,13 +557,13 @@ void KormanEnumerationVertexColoring::forwards() {
 
 void KormanEnumerationVertexColoring::backwards() {
     for (int i = r; i >= 0; i--) {
-        feasible_colors[ordering[new_ordering[i]]]
-            .erase(current_solution[ordering[new_ordering[i]]]);
-        if (!feasible_colors[ordering[new_ordering[i]]].empty()) {
-            if (feasible_colors[ordering[new_ordering[i]]].size() > 1
-                || *feasible_colors[ordering[new_ordering[i]]].begin() < ub) {
+        feasible_colors[new_ordering[i]]
+            .erase(current_solution[new_ordering[i]]);
+        if (!feasible_colors[new_ordering[i]].empty()) {
+            if (feasible_colors[new_ordering[i]].size() > 1
+                || *feasible_colors[new_ordering[i]].begin() < ub) {
                 current_solution[ordering[new_ordering[i]]]
-                    = *feasible_colors[ordering[new_ordering[i]]].begin();
+                    = *feasible_colors[new_ordering[i]].begin();
                 while (new_ordering.size() > i + 1)
                     new_ordering.pop_back();
                 r = i;
@@ -588,7 +588,8 @@ void KormanEnumerationVertexColoring::run() {
     ub = upper_bound + 1;
 
     new_ordering.push_back(0);
-    feasible_colors[ordering[0]].insert(1);
+    feasible_colors.resize(n);
+    feasible_colors[0].insert(1);
     current_solution[ordering[0]] = 1;
 
     while (true) {
@@ -623,8 +624,6 @@ void KormanEnumerationVertexColoring::determine_feasible_colors(int i) {
             feasible_colors_for_node.erase(current_solution[ordering[new_ordering[j]]]);
         }
     }
-    if (feasible_colors.find(ordering[new_ordering[i]]) != feasible_colors.end())
-        feasible_colors.erase(ordering[new_ordering[i]]);
-    feasible_colors.insert(std::make_pair(ordering[new_ordering[i]], feasible_colors_for_node));
+    feasible_colors[new_ordering[i]] = feasible_colors_for_node;
 }
 } /* namespace Koala */
