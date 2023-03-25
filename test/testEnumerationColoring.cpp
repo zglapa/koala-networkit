@@ -23,11 +23,10 @@ class BrownsOrdinaryEnumerationVertexColoringTest
 class ChristofidesEnumerationVertexColoringTest
 : public testing::TestWithParam<VertexColoringParameters> {};
 
-class TransitiveClosureTest
-: public testing::TestWithParam<TransitiveClosureParameters> {};
+class TransitiveClosureTest : public testing::TestWithParam<TransitiveClosureParameters> {};
 
-// class BrelazEnumerationVertexColoringTest
-//     : public testing::TestWithParam<VertexColoringParameters> { };
+class BrelazEnumerationVertexColoringTest
+: public testing::TestWithParam<VertexColoringParameters> {};
 
 // class KormanEnumerationVertexColoringTest
 //     : public testing::TestWithParam<VertexColoringParameters> { };
@@ -65,24 +64,24 @@ testing::Values(VertexColoringParameters{ 4, { { 0, 1 }, { 0, 2 }, { 1, 3 }, { 2
 VertexColoringParameters{
 6, { { 0, 1 }, { 0, 2 }, { 1, 2 }, { 0, 3 }, { 3, 4 }, { 1, 5 }, { 4, 5 } }, 3 },
 VertexColoringParameters{ 10,
-{ { 0, 2 }, { 0, 3 }, { 0, 4 }, { 0, 5 }, { 1, 2 }, { 1, 3 }, { 1, 4 },
-{ 1, 5 }, { 2, 6 }, { 2, 8 }, { 3, 4 }, { 3, 6 }, { 4, 6 }, { 5, 6 }, { 5, 7 },
-{ 5, 9 }, { 7, 8 }, { 7, 9 }, { 8, 9 } },
+{ { 0, 2 }, { 0, 3 }, { 0, 4 }, { 0, 5 }, { 1, 2 }, { 1, 3 }, { 1, 4 }, { 1, 5 }, { 2, 6 },
+{ 2, 8 }, { 3, 4 }, { 3, 6 }, { 4, 6 }, { 5, 6 }, { 5, 7 }, { 5, 9 }, { 7, 8 }, { 7, 9 },
+{ 8, 9 } },
 3 },
 VertexColoringParameters{ 8,
-{ { 0, 1 }, { 0, 2 }, { 0, 4 }, { 0, 6 }, { 1, 2 }, { 1, 3 }, { 1, 7 }, { 2, 3 },
-{ 2, 4 }, { 3, 5 }, { 3, 7 }, { 4, 5 }, { 4, 6 }, { 5, 6 }, { 5, 7 }, { 6, 7 } },
+{ { 0, 1 }, { 0, 2 }, { 0, 4 }, { 0, 6 }, { 1, 2 }, { 1, 3 }, { 1, 7 }, { 2, 3 }, { 2, 4 },
+{ 3, 5 }, { 3, 7 }, { 4, 5 }, { 4, 6 }, { 5, 6 }, { 5, 7 }, { 6, 7 } },
 4 },
 VertexColoringParameters{ 8,
-{ { 0, 1 }, { 0, 2 }, { 0, 4 }, { 0, 6 }, { 1, 3 }, { 1, 5 }, { 1, 7 },
-{ 2, 3 }, { 2, 4 }, { 2, 5 }, { 2, 6 }, { 3, 4 }, { 3, 5 }, { 3, 7 }, { 4, 6 },
-{ 4, 7 }, { 5, 6 }, { 5, 7 }, { 6, 7 } },
+{ { 0, 1 }, { 0, 2 }, { 0, 4 }, { 0, 6 }, { 1, 3 }, { 1, 5 }, { 1, 7 }, { 2, 3 }, { 2, 4 },
+{ 2, 5 }, { 2, 6 }, { 3, 4 }, { 3, 5 }, { 3, 7 }, { 4, 6 }, { 4, 7 }, { 5, 6 }, { 5, 7 },
+{ 6, 7 } },
 4 },
 VertexColoringParameters{ 10,
-{ { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 5 }, { 0, 6 }, { 0, 7 }, { 1, 2 },
-{ 1, 3 }, { 1, 4 }, { 1, 6 }, { 1, 7 }, { 2, 3 }, { 2, 4 }, { 2, 5 }, { 2, 7 },
-{ 3, 4 }, { 3, 5 }, { 3, 6 }, { 4, 5 }, { 4, 7 }, { 4, 8 }, { 4, 9 }, { 5, 6 },
-{ 5, 8 }, { 5, 9 }, { 6, 7 }, { 6, 8 }, { 6, 9 }, { 7, 8 }, { 7, 9 }, { 8, 9 } },
+{ { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 5 }, { 0, 6 }, { 0, 7 }, { 1, 2 }, { 1, 3 }, { 1, 4 },
+{ 1, 6 }, { 1, 7 }, { 2, 3 }, { 2, 4 }, { 2, 5 }, { 2, 7 }, { 3, 4 }, { 3, 5 }, { 3, 6 }, { 4, 5 },
+{ 4, 7 }, { 4, 8 }, { 4, 9 }, { 5, 6 }, { 5, 8 }, { 5, 9 }, { 6, 7 }, { 6, 8 }, { 6, 9 }, { 7, 8 },
+{ 7, 9 }, { 8, 9 } },
 5 },
 VertexColoringParameters{ 4, { { 0, 2 }, { 1, 3 }, { 2, 3 } }, 2 },
 VertexColoringParameters{ 9,
@@ -109,8 +108,8 @@ INSTANTIATE_TEST_SUITE_P(test_example,
 TransitiveClosureTest,
 testing::Values(TransitiveClosureParameters{ 6,
 { { 0, 1 }, { 0, 2 }, { 0, 3 }, { 1, 2 }, { 1, 5 }, { 3, 4 }, { 4, 5 } },
-{ { 0, 1, 1, 1, 1, 1 }, { 0, 0, 1, 0, 0, 1 }, { 0, 0, 0, 0, 0, 0 },
-{ 0, 0, 0, 0, 1, 1 }, { 0, 0, 0, 0, 0, 1 }, { 0, 0, 0, 0, 0, 0 } } }));
+{ { 0, 1, 1, 1, 1, 1 }, { 0, 0, 1, 0, 0, 1 }, { 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 1, 1 },
+{ 0, 0, 0, 0, 0, 1 }, { 0, 0, 0, 0, 0, 0 } } }));
 
 TEST_P(ChristofidesEnumerationVertexColoringTest, test) {
     VertexColoringParameters const& parameters = GetParam();
@@ -137,24 +136,24 @@ testing::Values(VertexColoringParameters{ 4, { { 0, 1 }, { 0, 2 }, { 1, 3 }, { 2
 VertexColoringParameters{
 6, { { 0, 1 }, { 0, 2 }, { 1, 2 }, { 0, 3 }, { 3, 4 }, { 1, 5 }, { 4, 5 } }, 3 },
 VertexColoringParameters{ 10,
-{ { 0, 2 }, { 0, 3 }, { 0, 4 }, { 0, 5 }, { 1, 2 }, { 1, 3 }, { 1, 4 },
-{ 1, 5 }, { 2, 6 }, { 2, 8 }, { 3, 4 }, { 3, 6 }, { 4, 6 }, { 5, 6 }, { 5, 7 },
-{ 5, 9 }, { 7, 8 }, { 7, 9 }, { 8, 9 } },
+{ { 0, 2 }, { 0, 3 }, { 0, 4 }, { 0, 5 }, { 1, 2 }, { 1, 3 }, { 1, 4 }, { 1, 5 }, { 2, 6 },
+{ 2, 8 }, { 3, 4 }, { 3, 6 }, { 4, 6 }, { 5, 6 }, { 5, 7 }, { 5, 9 }, { 7, 8 }, { 7, 9 },
+{ 8, 9 } },
 3 },
 VertexColoringParameters{ 8,
-{ { 0, 1 }, { 0, 2 }, { 0, 4 }, { 0, 6 }, { 1, 2 }, { 1, 3 }, { 1, 7 }, { 2, 3 },
-{ 2, 4 }, { 3, 5 }, { 3, 7 }, { 4, 5 }, { 4, 6 }, { 5, 6 }, { 5, 7 }, { 6, 7 } },
+{ { 0, 1 }, { 0, 2 }, { 0, 4 }, { 0, 6 }, { 1, 2 }, { 1, 3 }, { 1, 7 }, { 2, 3 }, { 2, 4 },
+{ 3, 5 }, { 3, 7 }, { 4, 5 }, { 4, 6 }, { 5, 6 }, { 5, 7 }, { 6, 7 } },
 4 },
 VertexColoringParameters{ 8,
-{ { 0, 1 }, { 0, 2 }, { 0, 4 }, { 0, 6 }, { 1, 3 }, { 1, 5 }, { 1, 7 },
-{ 2, 3 }, { 2, 4 }, { 2, 5 }, { 2, 6 }, { 3, 4 }, { 3, 5 }, { 3, 7 }, { 4, 6 },
-{ 4, 7 }, { 5, 6 }, { 5, 7 }, { 6, 7 } },
+{ { 0, 1 }, { 0, 2 }, { 0, 4 }, { 0, 6 }, { 1, 3 }, { 1, 5 }, { 1, 7 }, { 2, 3 }, { 2, 4 },
+{ 2, 5 }, { 2, 6 }, { 3, 4 }, { 3, 5 }, { 3, 7 }, { 4, 6 }, { 4, 7 }, { 5, 6 }, { 5, 7 },
+{ 6, 7 } },
 4 },
 VertexColoringParameters{ 10,
-{ { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 5 }, { 0, 6 }, { 0, 7 }, { 1, 2 },
-{ 1, 3 }, { 1, 4 }, { 1, 6 }, { 1, 7 }, { 2, 3 }, { 2, 4 }, { 2, 5 }, { 2, 7 },
-{ 3, 4 }, { 3, 5 }, { 3, 6 }, { 4, 5 }, { 4, 7 }, { 4, 8 }, { 4, 9 }, { 5, 6 },
-{ 5, 8 }, { 5, 9 }, { 6, 7 }, { 6, 8 }, { 6, 9 }, { 7, 8 }, { 7, 9 }, { 8, 9 } },
+{ { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 5 }, { 0, 6 }, { 0, 7 }, { 1, 2 }, { 1, 3 }, { 1, 4 },
+{ 1, 6 }, { 1, 7 }, { 2, 3 }, { 2, 4 }, { 2, 5 }, { 2, 7 }, { 3, 4 }, { 3, 5 }, { 3, 6 }, { 4, 5 },
+{ 4, 7 }, { 4, 8 }, { 4, 9 }, { 5, 6 }, { 5, 8 }, { 5, 9 }, { 6, 7 }, { 6, 8 }, { 6, 9 }, { 7, 8 },
+{ 7, 9 }, { 8, 9 } },
 5 },
 VertexColoringParameters{ 4, { { 0, 2 }, { 1, 3 }, { 2, 3 } }, 2 },
 VertexColoringParameters{ 9,
@@ -162,49 +161,55 @@ VertexColoringParameters{ 9,
 { 3, 7 }, { 3, 8 }, { 4, 5 }, { 4, 7 }, { 4, 8 }, { 5, 7 }, { 5, 8 }, { 6, 7 }, { 7, 8 } },
 4 }));
 
-// TEST_P(BrelazEnumerationVertexColoringTest, test) {
-//     VertexColoringParameters const& parameters = GetParam();
-//     NetworKit::Graph G = build_graph(parameters.N, parameters.E);
-//     auto algorithm = Koala::BrelazEnumerationVertexColoring(G);
-//     algorithm.run();
+TEST_P(BrelazEnumerationVertexColoringTest, test) {
+    VertexColoringParameters const& parameters = GetParam();
+    NetworKit::Graph G = build_graph(parameters.N, parameters.E);
+    auto algorithm = Koala::BrelazEnumerationVertexColoring(G);
+    algorithm.run();
 
-//     auto colors = algorithm.getColoring();
+    auto colors = algorithm.getColoring();
 
-//     for (const auto& [u, v] : parameters.E) {
-//         EXPECT_NE(colors[u], colors[v]);
-//     }
+    for (const auto& [u, v] : parameters.E) {
+        EXPECT_NE(colors[u], colors[v]);
+    }
 
-//     int max_color = 0;
-//     for (const auto& [v, c] : colors) {
-//         max_color = std::max(max_color, c);
-//     }
-//     EXPECT_EQ(max_color, parameters.colors);
-// }
+    int max_color = 0;
+    for (const auto& [v, c] : colors) {
+        max_color = std::max(max_color, c);
+    }
+    EXPECT_EQ(max_color, parameters.colors);
+}
 
-// INSTANTIATE_TEST_SUITE_P(
-//     test_example, BrelazEnumerationVertexColoringTest, testing::Values(
-//         VertexColoringParameters{ 4, {{0, 1}, {0, 2}, {1, 3}, {2, 3}}, 2 },
-//         VertexColoringParameters{ 6, {{0, 1}, {0, 2}, {1, 2}, {0, 3}, {3, 4}, {1, 5}, {4, 5}}, 3 },
-//         VertexColoringParameters{
-//             10, {{0, 2}, {0, 3}, {0, 4}, {0, 5}, {1, 2}, {1, 3}, {1, 4}, {1, 5}, {2, 6}, {2, 8},
-//                  {3, 4}, {3, 6}, {4, 6}, {5, 6}, {5, 7}, {5, 9}, {7, 8}, {7, 9}, {8, 9}}, 3},
-//         VertexColoringParameters{
-//             8, {{0, 1}, {0, 2}, {0, 4}, {0, 6}, {1, 2}, {1, 3}, {1, 7}, {2, 3}, {2, 4}, {3, 5},
-//                 {3, 7}, {4, 5}, {4, 6}, {5, 6}, {5, 7}, {6, 7}}, 4},
-//         VertexColoringParameters{
-//             8, {{0, 1}, {0, 2}, {0, 4}, {0, 6}, {1, 3}, {1, 5}, {1, 7}, {2, 3}, {2, 4}, {2, 5},
-//                 {2, 6}, {3, 4}, {3, 5}, {3, 7}, {4, 6}, {4, 7}, {5, 6}, {5, 7}, {6, 7}}, 4},
-//         VertexColoringParameters{
-//             10, {{0, 1}, {0, 2}, {0, 3}, {0, 5}, {0, 6}, {0, 7}, {1, 2}, {1, 3}, {1, 4}, {1, 6},
-//                  {1, 7}, {2, 3}, {2, 4}, {2, 5}, {2, 7}, {3, 4}, {3, 5}, {3, 6}, {4, 5}, {4, 7},
-//                  {4, 8}, {4, 9}, {5, 6}, {5, 8}, {5, 9}, {6, 7}, {6, 8}, {6, 9}, {7, 8}, {7, 9},
-//                  {8, 9}}, 5 },
-//         VertexColoringParameters{ 4, {{0, 2}, {1, 3}, {2, 3}}, 2 },
-//         VertexColoringParameters{
-//             9, {{0, 4}, {0, 5}, {0, 6}, {0, 8}, {1, 5}, {1, 6}, {1, 7}, {1, 8},
-//                 {2, 6}, {3, 7}, {3, 8}, {4, 5}, {4, 7}, {4, 8}, {5, 7},
-//                 {5, 8}, {6, 7}, {7, 8}}, 4 }
-// ));
+INSTANTIATE_TEST_SUITE_P(test_example,
+BrelazEnumerationVertexColoringTest,
+testing::Values(VertexColoringParameters{ 4, { { 0, 1 }, { 0, 2 }, { 1, 3 }, { 2, 3 } }, 2 },
+VertexColoringParameters{
+6, { { 0, 1 }, { 0, 2 }, { 1, 2 }, { 0, 3 }, { 3, 4 }, { 1, 5 }, { 4, 5 } }, 3 },
+VertexColoringParameters{ 10,
+{ { 0, 2 }, { 0, 3 }, { 0, 4 }, { 0, 5 }, { 1, 2 }, { 1, 3 }, { 1, 4 }, { 1, 5 }, { 2, 6 },
+{ 2, 8 }, { 3, 4 }, { 3, 6 }, { 4, 6 }, { 5, 6 }, { 5, 7 }, { 5, 9 }, { 7, 8 }, { 7, 9 },
+{ 8, 9 } },
+3 },
+VertexColoringParameters{ 8,
+{ { 0, 1 }, { 0, 2 }, { 0, 4 }, { 0, 6 }, { 1, 2 }, { 1, 3 }, { 1, 7 }, { 2, 3 }, { 2, 4 },
+{ 3, 5 }, { 3, 7 }, { 4, 5 }, { 4, 6 }, { 5, 6 }, { 5, 7 }, { 6, 7 } },
+4 },
+VertexColoringParameters{ 8,
+{ { 0, 1 }, { 0, 2 }, { 0, 4 }, { 0, 6 }, { 1, 3 }, { 1, 5 }, { 1, 7 }, { 2, 3 }, { 2, 4 },
+{ 2, 5 }, { 2, 6 }, { 3, 4 }, { 3, 5 }, { 3, 7 }, { 4, 6 }, { 4, 7 }, { 5, 6 }, { 5, 7 },
+{ 6, 7 } },
+4 },
+VertexColoringParameters{ 10,
+{ { 0, 1 }, { 0, 2 }, { 0, 3 }, { 0, 5 }, { 0, 6 }, { 0, 7 }, { 1, 2 }, { 1, 3 }, { 1, 4 },
+{ 1, 6 }, { 1, 7 }, { 2, 3 }, { 2, 4 }, { 2, 5 }, { 2, 7 }, { 3, 4 }, { 3, 5 }, { 3, 6 }, { 4, 5 },
+{ 4, 7 }, { 4, 8 }, { 4, 9 }, { 5, 6 }, { 5, 8 }, { 5, 9 }, { 6, 7 }, { 6, 8 }, { 6, 9 }, { 7, 8 },
+{ 7, 9 }, { 8, 9 } },
+5 },
+VertexColoringParameters{ 4, { { 0, 2 }, { 1, 3 }, { 2, 3 } }, 2 },
+VertexColoringParameters{ 9,
+{ { 0, 4 }, { 0, 5 }, { 0, 6 }, { 0, 8 }, { 1, 5 }, { 1, 6 }, { 1, 7 }, { 1, 8 }, { 2, 6 },
+{ 3, 7 }, { 3, 8 }, { 4, 5 }, { 4, 7 }, { 4, 8 }, { 5, 7 }, { 5, 8 }, { 6, 7 }, { 7, 8 } },
+4 }));
 
 // TODO: Fix Korman algorithm after refactor
 
@@ -230,8 +235,8 @@ VertexColoringParameters{ 9,
 // INSTANTIATE_TEST_SUITE_P(
 //     test_example, KormanEnumerationVertexColoringTest, testing::Values(
 //         VertexColoringParameters{ 4, {{0, 1}, {0, 2}, {1, 3}, {2, 3}}, 2 },
-//         VertexColoringParameters{ 6, {{0, 1}, {0, 2}, {1, 2}, {0, 3}, {3, 4}, {1, 5}, {4, 5}}, 3 },
-//         VertexColoringParameters{
+//         VertexColoringParameters{ 6, {{0, 1}, {0, 2}, {1, 2}, {0, 3}, {3, 4}, {1, 5}, {4, 5}}, 3
+//         }, VertexColoringParameters{
 //             10, {{0, 2}, {0, 3}, {0, 4}, {0, 5}, {1, 2}, {1, 3}, {1, 4}, {1, 5}, {2, 6}, {2, 8},
 //                  {3, 4}, {3, 6}, {4, 6}, {5, 6}, {5, 7}, {5, 9}, {7, 8}, {7, 9}, {8, 9}}, 3},
 //         VertexColoringParameters{

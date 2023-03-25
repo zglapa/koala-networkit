@@ -84,23 +84,24 @@ protected:
     void determine_current_predecessors(int r) override;
 };
 
-// class BrelazEnumerationVertexColoring: public EnumerationVertexColoring {
+class BrelazEnumerationVertexColoring : public EnumerationVertexColoring {
 
-// public:
-//     using EnumerationVertexColoring::EnumerationVertexColoring;
+public:
+    using EnumerationVertexColoring::EnumerationVertexColoring;
 
-//     void run();
+    void run();
 
-// protected:
-
-//     std::vector<NetworKit::node> saturation_largest_first_with_interchange();
-//     bool is_interchangeable(std::vector<int>& K, NetworKit::node new_node);
-//     std::vector<NetworKit::node> interchange_component(
-//        std::vector<NetworKit::node>& subgraph, NetworKit::node new_node);
-//     std::vector<int> get_representatives_of_adjacent_predecessors(int i);
-//     void determine_current_predecessors(int r) override;
-//     void backwards();
-// };
+protected:
+    std::vector<NetworKit::node> saturation_largest_first_with_interchange();
+    bool is_interchangeable(std::vector<int>& K,
+    NetworKit::node new_node,
+    std::map<NetworKit::node, int>& solution);
+    std::vector<NetworKit::node>
+    interchange_component(std::vector<NetworKit::node>& subgraph, NetworKit::node new_node);
+    std::vector<int> get_representatives_of_adjacent_predecessors(int i);
+    void determine_current_predecessors(int r) override;
+    void backwards();
+};
 
 // class KormanEnumerationVertexColoring: public BrownsOrdinaryEnumerationVertexColoring {
 
