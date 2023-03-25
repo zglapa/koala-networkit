@@ -21,69 +21,68 @@ namespace Koala {
 class EnumerationVertexColoring : public NetworKit::Algorithm {
 
 public:
-  /**
-   * Given an input graph, set up the enumeration vertex coloring procedure.
-   *
-   * @param graph The input graph.
-   */
-  EnumerationVertexColoring(const NetworKit::Graph &graph);
+    /**
+     * Given an input graph, set up the enumeration vertex coloring procedure.
+     *
+     * @param graph The input graph.
+     */
+    EnumerationVertexColoring(const NetworKit::Graph& graph);
 
-  /**
-   * Return the coloring found by the algorithm.
-   *
-   * @return a map from nodes to colors.
-   */
-  const std::map<NetworKit::node, int> getColoring() const;
+    /**
+     * Return the coloring found by the algorithm.
+     *
+     * @return a map from nodes to colors.
+     */
+    const std::map<NetworKit::node, int> getColoring() const;
 
 protected:
-  const std::optional<NetworKit::Graph> graph;
-  std::vector<NetworKit::node> ordering;
-  std::unordered_map<NetworKit::node, int> position;
-  std::vector<int> current_solution;
-  std::vector<int> best_solution;
-  // std::map<NetworKit::node, int> current_solution;
-  // std::map<NetworKit::node, int> best_solution;
-  std::vector<std::set<int>> feasible_colors;
-  std::set<int, std::greater<int>> current_predecessors;
-  int lower_bound;
-  int upper_bound;
-  int ub;
-  int n;
-  int r;
+    const std::optional<NetworKit::Graph> graph;
+    std::vector<NetworKit::node> ordering;
+    std::unordered_map<NetworKit::node, int> position;
+    std::vector<int> current_solution;
+    std::vector<int> best_solution;
+    // std::map<NetworKit::node, int> current_solution;
+    // std::map<NetworKit::node, int> best_solution;
+    std::vector<std::set<int>> feasible_colors;
+    std::set<int, std::greater<int>> current_predecessors;
+    int lower_bound;
+    int upper_bound;
+    int ub;
+    int n;
+    int r;
 
-  void forwards();
-  void backwards();
-  void determine_feasible_colors(int i);
-  virtual void determine_current_predecessors(int r) = 0;
+    void forwards();
+    void backwards();
+    void determine_feasible_colors(int i);
+    virtual void determine_current_predecessors(int r) = 0;
 };
 
 class BrownsOrdinaryEnumerationVertexColoring : public EnumerationVertexColoring {
 
 public:
-  using EnumerationVertexColoring::EnumerationVertexColoring;
+    using EnumerationVertexColoring::EnumerationVertexColoring;
 
-  void run();
+    void run();
 
 protected:
-  std::vector<NetworKit::node> greedy_largest_first_ordering();
-  void determine_current_predecessors(int r) override;
+    std::vector<NetworKit::node> greedy_largest_first_ordering();
+    void determine_current_predecessors(int r) override;
 };
 
-// class ChristofidesEnumerationVertexColoring: public EnumerationVertexColoring {
+class ChristofidesEnumerationVertexColoring : public EnumerationVertexColoring {
 
-// public:
-//     using EnumerationVertexColoring::EnumerationVertexColoring;
+public:
+    using EnumerationVertexColoring::EnumerationVertexColoring;
 
-//     void run();
-//     const std::vector<std::vector<bool>>& getTransitiveClosure() const;
+    void run();
+    const std::vector<std::vector<bool>>& getTransitiveClosure() const;
 
-// protected:
-//     std::vector<std::vector<bool>> transitive_closure;
+protected:
+    std::vector<std::vector<bool>> transitive_closure;
 
-//     void calculate_transitive_closure();
-//     void determine_current_predecessors(int r) override;
-
-// };
+    void calculate_transitive_closure();
+    void determine_current_predecessors(int r) override;
+};
 
 // class BrelazEnumerationVertexColoring: public EnumerationVertexColoring {
 

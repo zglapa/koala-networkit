@@ -34,22 +34,22 @@ void EnumerationVertexColoring::forwards() {
             r = i;
             return;
         }
-        int color           = *(feasible_colors[i]).begin();
+        int color = *(feasible_colors[i]).begin();
         current_solution[i] = color;
     }
-    best_solution           = current_solution;
-    int maximal_color       = 0;
+    best_solution = current_solution;
+    int maximal_color = 0;
     int maximal_color_index = -1;
 
     for (int i = 0; i < n; ++i) {
         if (current_solution[i] > maximal_color) {
-            maximal_color       = current_solution[i];
+            maximal_color = current_solution[i];
             maximal_color_index = i;
         }
     }
 
     ub = maximal_color;
-    r  = maximal_color_index;
+    r = maximal_color_index;
 }
 
 void EnumerationVertexColoring::backwards() {
@@ -108,14 +108,14 @@ BrownsOrdinaryEnumerationVertexColoring::greedy_largest_first_ordering() {
     NetworKit::node current_node;
 
     NetworKit::node max_degree_node = 0;
-    unsigned int max_degree         = 0;
+    unsigned int max_degree = 0;
 
     std::tie(max_degree_node, max_degree) = [](const NetworKit::Graph& graph) {
         NetworKit::node max_degree_node = 0;
-        unsigned int max_degree         = 0;
+        unsigned int max_degree = 0;
         graph.forNodes([&](NetworKit::node u) {
             if (graph.degree(u) > max_degree) {
-                max_degree      = graph.degree(u);
+                max_degree = graph.degree(u);
                 max_degree_node = u;
             }
         });
@@ -162,12 +162,11 @@ void BrownsOrdinaryEnumerationVertexColoring::determine_current_predecessors(int
 }
 
 void BrownsOrdinaryEnumerationVertexColoring::run() {
-    ordering    = greedy_largest_first_ordering();
+    ordering = greedy_largest_first_ordering();
     lower_bound = 1;
     upper_bound = graph->numberOfNodes();
-    n           = graph->numberOfNodes();
-
-    r  = 0;
+    n = graph->numberOfNodes();
+    r = 0;
     ub = upper_bound;
     feasible_colors.resize(n);
     feasible_colors[0].insert(1);
@@ -186,76 +185,72 @@ void BrownsOrdinaryEnumerationVertexColoring::run() {
     hasRun = true;
 }
 
-// void ChristofidesEnumerationVertexColoring::calculate_transitive_closure() {
-//     transitive_closure.resize(graph->numberOfNodes());
-//     for (NetworKit::node u = 0; u < graph->numberOfNodes(); ++u) {
-//         transitive_closure[u].resize(graph->numberOfNodes());
-//     }
-//     for (NetworKit::node u = 0; u < graph->numberOfNodes(); ++u) {
-//         for (NetworKit::node v = 0; v < graph->numberOfNodes(); ++v) {
-//             if (graph->hasEdge(u, v) && u < v) {
-//                 transitive_closure[u][v] = true;
-//             }
-//         }
-//     }
-//     for (NetworKit::node u = 0; u < graph->numberOfNodes(); ++u) {
-//         for (NetworKit::node v = 0; v < graph->numberOfNodes(); ++v) {
-//             if (transitive_closure[u][v]) {
-//                 for (NetworKit::node w = 0; w < graph->numberOfNodes(); ++w)
-//                 {
-//                     if (transitive_closure[v][w]) {
-//                         transitive_closure[u][w] = true;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
+void ChristofidesEnumerationVertexColoring::calculate_transitive_closure() {
+    transitive_closure.resize(n);
+    for (int u = 0; u < n; ++u) {
+        transitive_closure[u].resize(n);
+    }
+    for (int u = 0; u < n; ++u) {
+        for (int v = 0; v < n; ++v) {
+            if (graph->hasEdge(ordering[u], ordering[v]) && u < v) {
+                transitive_closure[u][v] = true;
+            }
+        }
+    }
+    for (int u = 0; u < n; ++u) {
+        for (int v = 0; v < n; ++v) {
+            if (transitive_closure[u][v]) {
+                for (int w = 0; w < n; ++w) {
+                    if (transitive_closure[v][w]) {
+                        transitive_closure[u][w] = true;
+                    }
+                }
+            }
+        }
+    }
+}
 
-// void
-// ChristofidesEnumerationVertexColoring::determine_current_predecessors(int r)
-// {
-//     for (int u = 0; u < n; ++u) {
-//         if (transitive_closure[u][ordering[r]]) {
-//             current_predecessors.insert(u);
-//         }
-//     }
-// }
+void ChristofidesEnumerationVertexColoring::determine_current_predecessors(int r) {
+    for (int u = 0; u < n; ++u) {
+        if (transitive_closure[u][r]) {
+            current_predecessors.insert(u);
+        }
+    }
+}
 
-// const std::vector<std::vector<bool>>&
-// ChristofidesEnumerationVertexColoring::getTransitiveClosure() const {
-//     assureFinished();
-//     return transitive_closure;
-// }
+const std::vector<std::vector<bool>>&
+ChristofidesEnumerationVertexColoring::getTransitiveClosure() const {
+    assureFinished();
+    return transitive_closure;
+}
 
-// void ChristofidesEnumerationVertexColoring::run() {
-//     calculate_transitive_closure();
-//     graph->forNodes([&](NetworKit::node u) {
-//         ordering.push_back(u);
-//     });
-//     lower_bound = 1;
-//     upper_bound = graph->numberOfNodes();
-//     n = graph->numberOfNodes();
+void ChristofidesEnumerationVertexColoring::run() {
+    graph->forNodes([&](NetworKit::node u) { ordering.push_back(u); });
+    lower_bound = 1;
+    upper_bound = graph->numberOfNodes();
+    n = graph->numberOfNodes();
+    r = 0;
+    ub = upper_bound + 1;
 
-//     r = 0;
-//     ub = upper_bound + 1;
+    calculate_transitive_closure();
 
-//     feasible_colors.resize(n);
-//     feasible_colors[0].insert(1);
+    feasible_colors.resize(n);
+    feasible_colors[0].insert(1);
+    current_solution.resize(n);
 
-//     while (true) {
-//         forwards();
-//         if (ub == lower_bound) {
-//             break;
-//         }
-//         backwards();
-//         if (r == 0) {
-//             break;
-//         }
-//     }
+    while (true) {
+        forwards();
+        if (ub == lower_bound) {
+            break;
+        }
+        backwards();
+        if (r == 0) {
+            break;
+        }
+    }
 
-//     hasRun = true;
-// }
+    hasRun = true;
+}
 
 // std::vector<NetworKit::node>
 // BrelazEnumerationVertexColoring::interchange_component(
