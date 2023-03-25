@@ -103,19 +103,19 @@ protected:
     void backwards();
 };
 
-// class KormanEnumerationVertexColoring: public BrownsOrdinaryEnumerationVertexColoring {
+class KormanEnumerationVertexColoring : public BrownsOrdinaryEnumerationVertexColoring {
 
-// public:
-//     using BrownsOrdinaryEnumerationVertexColoring::BrownsOrdinaryEnumerationVertexColoring;
+public:
+    using BrownsOrdinaryEnumerationVertexColoring::BrownsOrdinaryEnumerationVertexColoring;
 
-//     void run();
+    void run();
 
-// protected:
-//     std::vector<int> new_ordering;
+protected:
+    std::vector<int> new_ordering;
 
-//     void dynamic_rearrangement(int i);
-//     void forwards();
-//     void backwards();
-//     void determine_feasible_colors(int i);
-// };
+    void dynamic_rearrangement(int i);
+    void forwards();
+    void backwards();
+    void determine_feasible_colors(int i, std::unordered_set<int> blocked_colors);
+};
 } /* namespace Koala */

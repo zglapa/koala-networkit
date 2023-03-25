@@ -493,143 +493,132 @@ void BrelazEnumerationVertexColoring::run() {
     hasRun = true;
 }
 
-// void KormanEnumerationVertexColoring::forwards() {
-//     std::vector<bool> is_colored(n, false);
-//     std::vector<std::set<int>> neighbour_colors(n);
-//     DRVertexQueue queue;
+void KormanEnumerationVertexColoring::forwards() {
+    std::vector<bool> is_colored(n, false);
+    std::vector<std::unordered_set<int>> neighbour_colors(n);
+    DRVertexQueue queue;
 
-//     for (int i = 0; i <= r; i++) {
-//         is_colored[i] = true;
-//     }
+    for (int i = 0; i <= r; i++) {
+        is_colored[i] = true;
+    }
 
-//     for (int i = r + 1; i < n; ++i) {
-//         graph->forNeighborsOf(ordering[i], [&](NetworKit::node v) {
-//             auto j = position[v];
-//             if (is_colored[j]) {
-//                 neighbour_colors[i].insert(current_solution[v]);
-//             }
-//             });
-//         queue.insert(i, neighbour_colors[i].size());
-//     }
+    for (int i = r + 1; i < n; ++i) {
+        graph->forNeighborsOf(ordering[i], [&](NetworKit::node v) {
+            auto j = position[v];
+            if (is_colored[j]) {
+                neighbour_colors[i].insert(current_solution[j]);
+            }
+        });
+        queue.insert(i, neighbour_colors[i].size());
+    }
 
-//     while (!queue.empty()) {
-//         auto node = queue.pop();
-//         auto i = node.node;
+    while (!queue.empty()) {
+        auto top = queue.pop();
+        auto node = top.node;
 
-//         new_ordering.push_back(i);
+        new_ordering.push_back(node);
 
-//         determine_feasible_colors(new_ordering.size()-1);
+        determine_feasible_colors(new_ordering.size() - 1, neighbour_colors[node]);
 
-//         if (feasible_colors[i].empty()) {
-//             r = i;
-//             return;
-//         }
+        if (feasible_colors[node].empty()) {
+            r = node;
+            return;
+        }
 
-//         is_colored[i] = true;
-//         current_solution[ordering[i]] = *feasible_colors[i].begin();
+        is_colored[node] = true;
+        current_solution[node] = *feasible_colors[node].begin();
 
-//         graph->forNeighborsOf(ordering[i], [&](NetworKit::node v) {
-//             auto j = position[v];
-//             if (!is_colored[j]) {
-//                 neighbour_colors[j].insert(current_solution[ordering[i]]);
-//                 queue.updateValue(j, neighbour_colors[j].size());
-//             }
-//         });
-//     }
+        graph->forNeighborsOf(ordering[node], [&](NetworKit::node v) {
+            auto j = position[v];
+            if (!is_colored[j]) {
+                neighbour_colors[j].insert(current_solution[node]);
+                queue.updateValue(j, neighbour_colors[j].size());
+            }
+        });
+    }
 
-//     best_solution = current_solution;
-//     int maximal_color = 0;
-//     NetworKit::node maximal_color_node = -1;
-//     int maximal_color_index = -1;
-//     for (auto& node_color : best_solution) {
-//         if (node_color.second > maximal_color) {
-//             maximal_color = node_color.second;
-//             maximal_color_node = node_color.first;
-//         }
-//     }
+    best_solution = current_solution;
+    int maximal_color = 0;
+    int maximal_color_index = -1;
+    for (int i = 0; i < n; ++i) {
+        if (current_solution[i] > maximal_color) {
+            maximal_color = current_solution[i];
+            maximal_color_index = i;
+        }
+    }
+    ub = maximal_color;
+    r = maximal_color_index;
+}
 
-//     for (int i = 0; i < n; ++i) {
-//         if (ordering[i] == maximal_color_node) {
-//             maximal_color_index = i;
-//             break;
-//         }
-//     }
-//     ub = maximal_color;
-//     r = maximal_color_index;
-// }
+void KormanEnumerationVertexColoring::backwards() {
+    for (int i = r; i >= 0; i--) {
+        feasible_colors[new_ordering[i]].erase(current_solution[new_ordering[i]]);
+        if (!feasible_colors[new_ordering[i]].empty()) {
+            if (feasible_colors[new_ordering[i]].size() > 1 ||
+            *feasible_colors[new_ordering[i]].begin() < ub) {
+                current_solution[new_ordering[i]] = *feasible_colors[new_ordering[i]].begin();
+                while (new_ordering.size() > i + 1)
+                    new_ordering.pop_back();
+                r = i;
+                return;
+            }
+        }
+    }
+    r = 0;
+}
 
-// void KormanEnumerationVertexColoring::backwards() {
-//     for (int i = r; i >= 0; i--) {
-//         feasible_colors[new_ordering[i]]
-//             .erase(current_solution[new_ordering[i]]);
-//         if (!feasible_colors[new_ordering[i]].empty()) {
-//             if (feasible_colors[new_ordering[i]].size() > 1
-//                 || *feasible_colors[new_ordering[i]].begin() < ub) {
-//                 current_solution[ordering[new_ordering[i]]]
-//                     = *feasible_colors[new_ordering[i]].begin();
-//                 while (new_ordering.size() > i + 1)
-//                     new_ordering.pop_back();
-//                 r = i;
-//                 return;
-//             }
-//         }
-//     }
-//     r = 0;
-// }
+void KormanEnumerationVertexColoring::determine_feasible_colors(int i,
+std::unordered_set<int> blocked_colors) {
+    std::set<int> feasible_colors_for_node;
+    int current_maximal_color = 0;
 
-// void KormanEnumerationVertexColoring::run() {
-//     ordering = greedy_largest_first_ordering();
-//     lower_bound = 1;
-//     upper_bound = graph->numberOfNodes();
-//     n = graph->numberOfNodes();
+    for (int j = 0; j < i; ++j) {
+        if (current_maximal_color < current_solution[new_ordering[j]]) {
+            current_maximal_color = current_solution[new_ordering[j]];
+        }
+    }
 
-//     for(int i = 0; i < n; i++) {
-//         position[ordering[i]] = i;
-//     }
+    for (int j = 1; j <= current_maximal_color + 1; ++j) {
+        if (j >= ub)
+            break;
+        if (blocked_colors.find(j) == blocked_colors.end()) {
+            feasible_colors_for_node.insert(j);
+        }
+    }
 
-//     r = 0;
-//     ub = upper_bound + 1;
+    feasible_colors[new_ordering[i]] = feasible_colors_for_node;
+}
 
-//     new_ordering.push_back(0);
-//     feasible_colors.resize(n);
-//     feasible_colors[0].insert(1);
-//     current_solution[ordering[0]] = 1;
+void KormanEnumerationVertexColoring::run() {
+    ordering = greedy_largest_first_ordering();
+    lower_bound = 1;
+    upper_bound = graph->numberOfNodes();
+    n = graph->numberOfNodes();
+    current_solution.resize(n);
+    best_solution.resize(n);
 
-//     while (true) {
-//         forwards();
-//         if (ub == lower_bound) {
-//             break;
-//         }
-//         backwards();
-//         if (r == 0) {
-//             break;
-//         }
-//     }
-//     hasRun = true;
-// }
+    for (int i = 0; i < n; i++) {
+        position[ordering[i]] = i;
+    }
 
-// void KormanEnumerationVertexColoring::determine_feasible_colors(int i) {
-//     std::set<int> feasible_colors_for_node;
-//     int current_maximal_color = 0;
-//     for (int j = 0; j < i; ++j) {
-//         if (current_maximal_color <
-//         current_solution[ordering[new_ordering[j]]]) {
-//             current_maximal_color =
-//             current_solution[ordering[new_ordering[j]]];
-//         }
-//     }
+    r = 0;
+    ub = upper_bound + 1;
 
-//     for (int j = 1; j <= current_maximal_color + 1; ++j) {
-//         if (j >= ub) break;
-//         feasible_colors_for_node.insert(j);
-//     }
+    new_ordering.push_back(0);
+    feasible_colors.resize(n);
+    feasible_colors[0].insert(1);
+    current_solution[0] = 1;
 
-//     for (int j = 0; j < i; ++j) {
-//         if (graph->hasEdge(ordering[new_ordering[i]],
-//         ordering[new_ordering[j]])) {
-//             feasible_colors_for_node.erase(current_solution[ordering[new_ordering[j]]]);
-//         }
-//     }
-//     feasible_colors[new_ordering[i]] = feasible_colors_for_node;
-// }
+    while (true) {
+        forwards();
+        if (ub == lower_bound) {
+            break;
+        }
+        backwards();
+        if (r == 0) {
+            break;
+        }
+    }
+    hasRun = true;
+}
 } /* namespace Koala */
