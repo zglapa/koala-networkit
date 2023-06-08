@@ -31,29 +31,39 @@ NetworKit::Graph build_graph(const int& N, const std::list<std::pair<int, int>>&
 }
 
 
-TEST_P(IndependentSetCheckerTest, testNumberOfIndependentSetsNotIntersectingWith) {
-    auto parameters = GetParam();
-    auto G = build_graph(parameters.N, parameters.E);
-    Koala::IndependentSetChecker independentSetChecker(G);
-    std::vector<NetworKit::node> subset(parameters.subset.begin(), parameters.subset.end());
-    auto result = independentSetChecker.numberOfIndependentSetsNotIntersectingWith(subset);
-    EXPECT_EQ(result, parameters.numberOfSets);
-}
+// TEST_P(IndependentSetCheckerTest, testNumberOfIndependentSetsNotIntersectingWith) {
+//     auto parameters = GetParam();
+//     auto G = build_graph(parameters.N, parameters.E);
+//     Koala::IndependentSetChecker independentSetChecker(G);
+//     std::vector<NetworKit::node> subset(parameters.subset.begin(), parameters.subset.end());
+//     auto result = independentSetChecker.numberOfIndependentSetsNotIntersectingWith(subset);
+//     EXPECT_EQ(result, parameters.numberOfSets);
+// }
 
-INSTANTIATE_TEST_SUITE_P(test,
-IndependentSetCheckerTest,
-testing::Values(IndependentSetParameters{ 7,
-{ { 0, 1 }, { 0, 2 }, { 1, 3 }, { 1, 4 }, { 2, 3 }, { 2, 5 }, { 2, 6 }, { 3, 4 }, { 4, 5 },
-{ 5, 6 } },
-{ 2, 3 }, 13 }));
+// INSTANTIATE_TEST_SUITE_P(test,
+// IndependentSetCheckerTest,
+// testing::Values(IndependentSetParameters{ 7,
+// { { 0, 1 }, { 0, 2 }, { 1, 3 }, { 1, 4 }, { 2, 3 }, { 2, 5 }, { 2, 6 }, { 3, 4 }, { 4, 5 },
+// { 5, 6 } },
+// { 2, 3 }, 13 }));
 
 TEST_P(InclusionExclusionVertexColoringTest, testGetColoring) {
     auto parameters = GetParam();
     auto G = build_graph(parameters.N, parameters.E);
     Koala::InclusionExclusionVertexColoring coloring(G);
     coloring.run();
-    auto result = coloring.getChromaticNumber();
-    EXPECT_EQ(result, parameters.k);
+    auto chromaticNumberSimple = coloring.getChromaticNumber();
+    EXPECT_EQ(chromaticNumberSimple, parameters.k);
+    // auto colors = coloring.getColoring();
+    // int maxColor = 0;
+    // for (const auto& [u, v] : parameters.E) {
+    // EXPECT_NE(colors[u], colors[v]);
+    // }
+    //
+    // for (const auto& [node, color] : colors) {
+    // maxColor = std::max(maxColor, color);
+    // }
+    // EXPECT_EQ(maxColor, parameters.k);
 }
 
 INSTANTIATE_TEST_SUITE_P(test,

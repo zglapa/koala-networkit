@@ -11,6 +11,7 @@
 #include <networkit/base/Algorithm.hpp>
 #include <networkit/graph/Graph.hpp>
 #include <optional>
+#include <vector>
 
 
 namespace Koala {
@@ -41,14 +42,16 @@ public:
      * @return a map from nodes to colors.
      */
     const std::map<NetworKit::node, int> getColoring() const;
-    const int getChromaticNumber() const;
+    int getChromaticNumber() const;
     void run();
 
 protected:
     const std::optional<NetworKit::Graph> graph;
     std::vector<int> best_solution;
-    bool is_k_colorable(int k);
+    bool is_k_colorable(int k, const NetworKit::Graph& G);
+    int calculateChromaticNumber(const NetworKit::Graph& G);
     int chromatic_number;
+    void contractNodes(std::map<int, std::vector<int>>& contractedNodes, int u, int v);
 };
 
 } /* namespace Koala */

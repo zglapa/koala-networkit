@@ -1,5 +1,6 @@
 #include <coloring/InclusionExclusionVertexColoring.hpp>
 #include <iostream>
+#include <map>
 #include <optional>
 #include <vector>
 namespace Koala {
@@ -59,13 +60,13 @@ const std::map<NetworKit::node, int> InclusionExclusionVertexColoring::getColori
     return coloring;
 }
 
-bool InclusionExclusionVertexColoring::is_k_colorable(int k) {
+bool InclusionExclusionVertexColoring::is_k_colorable(int k, const NetworKit::Graph& G) {
     long long int numberOfKCovers = 0;
-    IndependentSetChecker independentSetChecker(*graph);
+    IndependentSetChecker independentSetChecker(G);
     std::vector<NetworKit::node> X;
-    for (int i = 0; i < (1 << graph->numberOfNodes()); i++) {
+    for (int i = 0; i < (1 << G.numberOfNodes()); i++) {
         X.clear();
-        for (int j = 0; j < graph->numberOfNodes(); j++) {
+        for (int j = 0; j < G.numberOfNodes(); j++) {
             if (i & (1 << j)) {
                 X.push_back(j);
             }
@@ -77,41 +78,140 @@ bool InclusionExclusionVertexColoring::is_k_colorable(int k) {
     return numberOfKCovers > 0;
 }
 
-void InclusionExclusionVertexColoring::run() {
-    int n = graph->numberOfNodes();
+int InclusionExclusionVertexColoring::calculateChromaticNumber(const NetworKit::Graph& G) {
+    int n = G.numberOfNodes();
     int l = 1;
     int r = n - 1;
-    best_solution = std::vector<int>(n, 0);
-    if (is_k_colorable(l)) {
-        best_solution = std::vector<int>(n, 1);
-        chromatic_number = 1;
-    } else if (!is_k_colorable(r)) {
+    auto solution = std::vector<int>(n, 0);
+    auto chromaticNumber = 0;
+    if (is_k_colorable(l, G)) {
+        solution = std::vector<int>(n, 1);
+        chromaticNumber = 1;
+    } else if (!is_k_colorable(r, G)) {
         for (int i = 0; i < n; i++) {
-            best_solution[i] = i + 1;
+            solution[i] = i + 1;
         }
-        chromatic_number = n;
+        chromaticNumber = n;
     } else {
         while (l + 1 < r) {
             int m = (l + r) / 2;
-            if (is_k_colorable(m)) {
+            if (is_k_colorable(m, G)) {
                 r = m;
             } else {
                 l = m + 1;
             }
         }
-        if (is_k_colorable(l)) {
-            best_solution = std::vector<int>(n, l);
-            chromatic_number = l;
+        if (is_k_colorable(l, G)) {
+            solution = std::vector<int>(n, l);
+            chromaticNumber = l;
         } else {
-            best_solution = std::vector<int>(n, r);
-            chromatic_number = r;
+            solution = std::vector<int>(n, r);
+            chromaticNumber = r;
         }
     }
+    return chromaticNumber;
+}
 
+void InclusionExclusionVertexColoring::contractNodes(
+std::map<int, std::vector<int>>& contractedNodes,
+int u,
+int v) {
+    if (contractedNodes.find(u) == contractedNodes.end()) {
+        contractedNodes[u] = std::vector<int>();
+    }
+    contractedNodes[u].push_back(v);
+}
+
+void InclusionExclusionVertexColoring::run() {
+    int freeColor = 1;
+    int numberOfNodes = graph->numberOfNodes();
+    std::map<int, std::vector<int>> contractedNodes;
+    best_solution = std::vector<int>(numberOfNodes, 0);
+    auto G = *graph;
+    while (numberOfNodes > 1) {
+        NetworKit::node v = 0;
+        G.forNodes([&](NetworKit::node u) {
+            v = u;
+            return;
+        });
+        std::vector<NetworKit::node> notNeighbours;
+        NetworKit::Graph H(G);
+
+        int k = 0;
+        H.forNodes([&](NetworKit::node u) {
+            if (u != v && !H.hasEdge(u, v)) {
+                H.addEdge(u, v);
+                notNeighbours.push_back(u);
+                k++;
+            }
+        });
+        int chromaticNumberG = calculateChromaticNumber(G);
+        int chromaticNumberH = calculateChromaticNumber(H);
+        if (chromaticNumberG == chromaticNumberH) {
+            G.removeNode(v);
+            best_solution[v] = freeColor++;
+        } else {
+            int l = 0;
+            int r = k;
+            int u1 = notNeighbours[0];
+            G.addEdge(v, u1);
+            if (calculateChromaticNumber(G) == chromaticNumberG + 1) {
+                contractNodes(contractedNodes, u1, v);
+                G.forNeighborsOf(v, [&](NetworKit::node u) {
+                    if (u != u1) {
+                        G.addEdge(u, u1, 1.0, true);
+                    }
+                });
+                G.removeNode(v);
+            } else {
+                int prev_m = 0, m = 0, um = 0;
+                while (l + 1 < r) {
+                    m = (l + r) / 2;
+                    um = notNeighbours[m];
+                    if (m > prev_m) {
+                        for (int i = prev_m + 1; i <= m; i++) {
+                            G.addEdge(v, notNeighbours[i]);
+                        }
+                    } else {
+                        for (int i = m + 1; i <= prev_m; i++) {
+                            G.removeEdge(v, notNeighbours[i]);
+                        }
+                    }
+                    prev_m = m;
+                    if (calculateChromaticNumber(G) == chromaticNumberG) {
+                        l = m;
+                    } else {
+                        r = m;
+                    }
+                }
+                G.forNeighborsOf(v, [&](NetworKit::node u) {
+                    if (u != um) {
+                        G.addEdge(u, um, 1.0, true);
+                    }
+                });
+                G.removeNode(v);
+                contractNodes(contractedNodes, um, v);
+            }
+        }
+        numberOfNodes--;
+    }
+
+    for (auto& pair : contractedNodes) {
+        if (best_solution[pair.first] == 0)
+            best_solution[pair.first] = freeColor++;
+        for (auto& node : pair.second) {
+            best_solution[node] = best_solution[pair.first];
+        }
+    }
+    for (int i = 0; i < graph->numberOfNodes(); i++) {
+        if (best_solution[i] == 0)
+            best_solution[i] = freeColor++;
+    }
+    chromatic_number = calculateChromaticNumber(*graph);
     hasRun = true;
 }
 
-const int InclusionExclusionVertexColoring::getChromaticNumber() const {
+int InclusionExclusionVertexColoring::getChromaticNumber() const {
     assureFinished();
     return chromatic_number;
 }
