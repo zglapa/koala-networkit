@@ -4,6 +4,7 @@
 #include <vector>
 
 #include <coloring/EnumerationVertexColoring.hpp>
+#include <io/S6GraphReader.hpp>
 
 struct VertexColoringParameters {
     int N;
@@ -16,7 +17,10 @@ struct TransitiveClosureParameters {
     std::list<std::pair<int, int>> E;
     std::vector<std::vector<bool>> TC;
 };
-
+struct InputGraphParameters {
+    std::string G;
+    int k;
+};
 class BrownsOrdinaryEnumerationVertexColoringTest
 : public testing::TestWithParam<VertexColoringParameters> {};
 
@@ -30,6 +34,9 @@ class BrelazEnumerationVertexColoringTest
 
 class KormanEnumerationVertexColoringTest
 : public testing::TestWithParam<VertexColoringParameters> {};
+
+class BrownsOrdinaryEnumerationVertexColoringDimacsTest
+: public testing::TestWithParam<InputGraphParameters> {};
 
 NetworKit::Graph build_graph(const int& N, const std::list<std::pair<int, int>>& E) {
     NetworKit::Graph G(N, false, false);
@@ -260,3 +267,21 @@ VertexColoringParameters{ 9,
 { { 0, 4 }, { 0, 5 }, { 0, 6 }, { 0, 8 }, { 1, 5 }, { 1, 6 }, { 1, 7 }, { 1, 8 }, { 2, 6 },
 { 3, 7 }, { 3, 8 }, { 4, 5 }, { 4, 7 }, { 4, 8 }, { 5, 7 }, { 5, 8 }, { 6, 7 }, { 7, 8 } },
 4 }));
+
+TEST_P(BrownsOrdinaryEnumerationVertexColoringDimacsTest, test) {
+    auto parameters = GetParam();
+    NetworKit::Graph G = Koala::S6GraphReader().read(parameters.G);
+    auto algorithm = Koala::BrownsOrdinaryEnumerationVertexColoring(G);
+    algorithm.run();
+    auto colors = algorithm.getColoring();
+    int maxColor = 0;
+    G.forEdges([&](NetworKit::node u, NetworKit::node v) { EXPECT_NE(colors[u], colors[v]); });
+    for (const auto& [node, color] : colors) {
+        maxColor = std::max(maxColor, color);
+    }
+    EXPECT_EQ(maxColor, parameters.k);
+}
+
+INSTANTIATE_TEST_SUITE_P(test,
+BrownsOrdinaryEnumerationVertexColoringDimacsTest,
+testing::Values(InputGraphParameters{ "../../input/cubhypo20.s6", 3 }));

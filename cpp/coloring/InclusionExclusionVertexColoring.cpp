@@ -207,7 +207,6 @@ void InclusionExclusionVertexColoring::run() {
         if (best_solution[i] == 0)
             best_solution[i] = freeColor++;
     }
-    chromatic_number = calculateChromaticNumber(*graph);
     hasRun = true;
 }
 
