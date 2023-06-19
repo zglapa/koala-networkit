@@ -558,14 +558,13 @@ void KormanEnumerationVertexColoring::forwards() {
 }
 
 void KormanEnumerationVertexColoring::backwards() {
-    for (auto i = r; i >= 0; i--) {
+    for (auto i = r - 1; i >= 0; i--) {
         feasible_colors[new_ordering[i]].erase(current_solution[new_ordering[i]]);
         if (!feasible_colors[new_ordering[i]].empty()) {
             if (feasible_colors[new_ordering[i]].size() > 1 ||
             *feasible_colors[new_ordering[i]].begin() < ub) {
                 current_solution[new_ordering[i]] = *feasible_colors[new_ordering[i]].begin();
-                int new_ordering_size = new_ordering.size();
-                while (new_ordering_size > i + 1)
+                while (new_ordering.size() > i + 1)
                     new_ordering.pop_back();
                 r = i;
                 return;
