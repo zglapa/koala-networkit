@@ -7,6 +7,7 @@
 
 #include <coloring/DRVertexQueue.hpp>
 #include <coloring/EnumerationVertexColoring.hpp>
+#include <iostream>
 #include <limits>
 
 namespace Koala {
@@ -28,7 +29,7 @@ const std::map<NetworKit::node, int> EnumerationVertexColoring::getColoring() co
 
 void EnumerationVertexColoring::forwards() {
     for (int i = r; i < n; ++i) {
-        if (r < i)
+        if (r == 0 || i >= r + 1)
             determine_feasible_colors(i);
         if (feasible_colors[i].empty()) {
             r = i;
@@ -58,7 +59,7 @@ void EnumerationVertexColoring::backwards() {
         int i = *current_predecessors.begin();
         current_predecessors.erase(i);
         feasible_colors[i].erase(current_solution[i]);
-        if (!feasible_colors[i].empty()) {
+        if (!feasible_colors[i].empty() && *(feasible_colors[i]).begin() < ub) {
             r = i;
             return;
         }
@@ -226,12 +227,12 @@ ChristofidesEnumerationVertexColoring::getTransitiveClosure() const {
 }
 
 void ChristofidesEnumerationVertexColoring::run() {
-    graph->forNodes([&](NetworKit::node u) { ordering.push_back(u); });
+    ordering = greedy_largest_first_ordering();
     lower_bound = 1;
     upper_bound = graph->numberOfNodes();
     n = graph->numberOfNodes();
     r = 0;
-    ub = upper_bound + 1;
+    ub = upper_bound;
 
     calculate_transitive_closure();
 
@@ -413,13 +414,16 @@ BrelazEnumerationVertexColoring::saturation_largest_first_with_interchange() {
                 }
             }
         }
+        std::vector<std::tuple<int, int, NetworKit::node>> temp_satur;
         for (const auto& [saturation_degree, degree, node] : saturation) {
             if (graph->hasEdge(u, node)) {
                 neighbours_colors[node].insert(solution[u]);
-                saturation.erase(std::make_tuple(saturation_degree, degree, node));
-                saturation.insert(
-                std::make_tuple(neighbours_colors[node].size(), degree - 1, node));
+                temp_satur.push_back(std::make_tuple(saturation_degree, degree, node));
             }
+        }
+        for (const auto& [saturation_degree, degree, node] : temp_satur) {
+            saturation.erase(std::make_tuple(saturation_degree, degree, node));
+            saturation.insert(std::make_tuple(neighbours_colors[node].size(), degree - 1, node));
         }
     }
 
@@ -475,7 +479,7 @@ void BrelazEnumerationVertexColoring::backwards() {
 void BrelazEnumerationVertexColoring::run() {
     n = graph->numberOfNodes();
     current_solution.resize(n);
-    best_solution.resize(n);
+    best_solution.resize(n); 
 
     ordering = saturation_largest_first_with_interchange();
 
