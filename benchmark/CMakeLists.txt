@@ -7,3 +7,8 @@ koala_make_benchmark(
     benchmark_exact_vertex_coloring
     benchmarkExactVertexColoring.cpp
     benchmarkExactVertexColoring.sh)
+
+koala_make_benchmark(
+    random_graph_generator
+    randomGraphGenerator.cpp
+    randomGraphGenerator.sh)
