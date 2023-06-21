@@ -479,7 +479,7 @@ void BrelazEnumerationVertexColoring::backwards() {
 void BrelazEnumerationVertexColoring::run() {
     n = graph->numberOfNodes();
     current_solution.resize(n);
-    best_solution.resize(n); 
+    best_solution.resize(n);
 
     ordering = saturation_largest_first_with_interchange();
 
@@ -509,19 +509,20 @@ void KormanEnumerationVertexColoring::forwards() {
     std::vector<std::unordered_set<int>> neighbour_colors(n);
     DRVertexQueue queue;
 
-    for (int i = 0; i <= r; i++) {
+    for (int i : new_ordering) {
         is_colored[i] = true;
-    }
-
-    for (int i = r + 1; i < n; ++i) {
         graph->forNeighborsOf(ordering[i], [&](NetworKit::node v) {
             auto j = position[v];
-            if (is_colored[j]) {
-                neighbour_colors[i].insert(current_solution[j]);
-            }
+            neighbour_colors[j].insert(current_solution[i]);
         });
-        queue.insert(i, neighbour_colors[i].size());
     }
+
+    graph->forNodes([&](NetworKit::node u) {
+        auto j = position[u];
+        if (!is_colored[j]) {
+            queue.insert(j, neighbour_colors[j].size());
+        }
+    });
 
     while (!queue.empty()) {
         auto top = queue.pop();
@@ -532,7 +533,7 @@ void KormanEnumerationVertexColoring::forwards() {
         determine_feasible_colors(new_ordering.size() - 1, neighbour_colors[node]);
 
         if (feasible_colors[node].empty()) {
-            r = node;
+            r = new_ordering.size() - 1;
             return;
         }
 
@@ -552,8 +553,8 @@ void KormanEnumerationVertexColoring::forwards() {
     int maximal_color = 0;
     int maximal_color_index = -1;
     for (int i = 0; i < n; ++i) {
-        if (current_solution[i] > maximal_color) {
-            maximal_color = current_solution[i];
+        if (best_solution[new_ordering[i]] > maximal_color) {
+            maximal_color = best_solution[new_ordering[i]];
             maximal_color_index = i;
         }
     }
@@ -565,8 +566,7 @@ void KormanEnumerationVertexColoring::backwards() {
     for (auto i = r - 1; i >= 0; i--) {
         feasible_colors[new_ordering[i]].erase(current_solution[new_ordering[i]]);
         if (!feasible_colors[new_ordering[i]].empty()) {
-            if (feasible_colors[new_ordering[i]].size() > 1 ||
-            *feasible_colors[new_ordering[i]].begin() < ub) {
+            if (*feasible_colors[new_ordering[i]].begin() < ub) {
                 current_solution[new_ordering[i]] = *feasible_colors[new_ordering[i]].begin();
                 while (new_ordering.size() > i + 1)
                     new_ordering.pop_back();
