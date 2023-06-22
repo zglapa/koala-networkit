@@ -3,6 +3,7 @@
 #include <map>
 
 #include <coloring/EnumerationVertexColoring.hpp>
+#include <io/DimacsGraphWriter.hpp>
 #include <io/G6GraphWriter.hpp>
 #include <networkit/generators/ErdosRenyiGenerator.hpp>
 
@@ -21,16 +22,17 @@ void print_graph_in_human_readable(NetworKit::Graph G) {
 
 
 int main(int argc, const char* argv[]) {
-    if (argc != 3) {
+    if (argc != 4) {
         std::cerr << "Usage: " << argv[0] << " <nodes>"
-                  << " <probability>" << std::endl;
+                  << " <probability>"
+                  << "<output file>" << std::endl;
         return 1;
     }
     int n = std::stoi(argv[1]);
     double p = std::stod(argv[2]);
+    std::string output_file = argv[3];
     NetworKit::Graph G = generateRandomGraph(n, p);
-    std::string graph = Koala::G6GraphWriter().writeline(G);
-    std::cout << graph << std::endl;
+    Koala::DimacsGraphWriter().write(G, output_file);
     // print_graph_in_human_readable(G);
     return 0;
 }
