@@ -3,7 +3,7 @@
 declare -A DENSITIES_VALUES
 DENSITIES=(dens01 dens03 dens05 dens07 dens09)
 DENSITIES_VALUES=(["dens01"]="0.1" ["dens03"]="0.3" ["dens05"]="0.5" ["dens07"]="0.7" ["dens09"]="0.9")
-SIZES=(180)
+SIZES=(10 20 30 40 50 60)
 VERSIONS=(v1 v2 v3 v4 v5)
 
 generate() {
@@ -19,9 +19,10 @@ generate() {
         probability=${DENSITIES_VALUES[$density]}
         for size in "${SIZES[@]}"; do
             for version in "${VERSIONS[@]}"; do
-                filename="input/generated/${density}/n${size}/n_${size}_${version}.g6"
-                echo "./build/benchmark/random_graph_generator > ${filename} ${size} ${probability}"
-                ./build/benchmark/random_graph_generator > "${filename}" ${size} ${probability}
+                filename="input/generated/${density}/n${size}/n_${size}_${version}.col"
+                touch "${filename}"
+                echo "./build/benchmark/random_graph_generator ${size} ${probability} ${filename}"
+                ./build/benchmark/random_graph_generator ${size} ${probability} "${filename}"
             done
         done
     done

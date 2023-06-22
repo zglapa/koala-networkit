@@ -16,7 +16,7 @@ def execute_program_with_input_and_time(program_path, input_file_path, algorithm
     
     with open(input_file_path, 'r') as input_file:
         try:
-            subprocess.run([program_path, algorithms[algorithm]], input=input_file.read(), text=True, check=True)
+            subprocess.run([program_path, algorithms[algorithm], input_file_path], text=True, check=True)
         except subprocess.CalledProcessError as e:
             print(f"Error executing the program: {e}")
     
@@ -26,7 +26,7 @@ def execute_program_with_input_and_time(program_path, input_file_path, algorithm
 
 def iterate_directory(directory):
     sums = [0,0,0,0]
-    iterations = 0;
+    iterations = 0
     for root, dirs, files in os.walk(directory):
         for file in files:
             iterations += 1
@@ -39,7 +39,8 @@ def iterate_directory(directory):
     print(f"Brown: {round(sums[0] / iterations,5)} seconds")
     print(f"Christofides: {round(sums[1] / iterations,5)} seconds")
     print(f"Brelaz: {round(sums[2] / iterations,5)} seconds")
-    print(f"Korman: {round(sums[3] / iterations,5)} seconds")    
+    print(f"Korman: {round(sums[3] / iterations,5)} seconds") 
+    print(f"{round(sums[0] / iterations,5)} & {round(sums[1] / iterations,5)} & {round(sums[2] / iterations,5)} & {round(sums[3] / iterations,5)} \\")   
 
 
 if __name__ == '__main__':
