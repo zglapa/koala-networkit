@@ -202,12 +202,12 @@ INSTANTIATE_TEST_SUITE_P(
 ));
 
 TEST_P(BrownsOrdinaryEnumerationVertexColoringTest, test) {
-    VertexColoringParameters const& parameters = GetParam( );
+    VertexColoringParameters const& parameters = GetParam();
     NetworKit::Graph G = build_graph(parameters.N, parameters.E);
     auto algorithm = Koala::BrownsOrdinaryEnumerationVertexColoring(G);
-    algorithm.run( );
+    algorithm.run();
 
-    auto colors = algorithm.getColoring( );
+    auto colors = algorithm.getColoring();
 
     check(parameters, colors);
 }
@@ -240,12 +240,12 @@ INSTANTIATE_TEST_SUITE_P(test_example,
             4}));
 
 TEST_P(ChristofidesEnumerationVertexColoringTest, test) {
-    VertexColoringParameters const& parameters = GetParam( );
+    VertexColoringParameters const& parameters = GetParam();
     NetworKit::Graph G = build_graph(parameters.N, parameters.E);
     auto algorithm = Koala::ChristofidesEnumerationVertexColoring(G);
-    algorithm.run( );
+    algorithm.run();
 
-    auto colors = algorithm.getColoring( );
+    auto colors = algorithm.getColoring();
 
     check(parameters, colors);
 }
@@ -278,12 +278,12 @@ INSTANTIATE_TEST_SUITE_P(test_example,
             4}));
 
 TEST_P(BrelazEnumerationVertexColoringTest, test) {
-    VertexColoringParameters const& parameters = GetParam( );
+    VertexColoringParameters const& parameters = GetParam();
     NetworKit::Graph G = build_graph(parameters.N, parameters.E);
     auto algorithm = Koala::BrelazEnumerationVertexColoring(G);
-    algorithm.run( );
+    algorithm.run();
 
-    auto colors = algorithm.getColoring( );
+    auto colors = algorithm.getColoring();
 
     check(parameters, colors);
 }
@@ -316,12 +316,12 @@ INSTANTIATE_TEST_SUITE_P(test_example,
             4}));
 
 TEST_P(KormanEnumerationVertexColoringTest, test) {
-    VertexColoringParameters const& parameters = GetParam( );
+    VertexColoringParameters const& parameters = GetParam();
     NetworKit::Graph G = build_graph(parameters.N, parameters.E);
     auto algorithm = Koala::KormanEnumerationVertexColoring(G);
-    algorithm.run( );
+    algorithm.run();
 
-    auto colors = algorithm.getColoring( );
+    auto colors = algorithm.getColoring();
 
     check(parameters, colors);
 }
