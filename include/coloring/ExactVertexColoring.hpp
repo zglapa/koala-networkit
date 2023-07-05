@@ -1,5 +1,5 @@
 /*
- * EnumerationVertexColoring.hpp
+ * ExactVertexColoring.hpp
  *
  * Created on: 06.02.2023
  *   Author: Zofia Glapa (zofia.glapa@student.uj.edu.pl)

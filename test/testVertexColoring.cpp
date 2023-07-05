@@ -2,7 +2,7 @@
 
 #include <list>
 
-#include <coloring/EnumerationVertexColoring.hpp>
+#include <coloring/ExactVertexColoring.hpp>
 #include <coloring/GreedyVertexColoring.hpp>
 #include <coloring/PerfectGraphVertexColoring.hpp>
 

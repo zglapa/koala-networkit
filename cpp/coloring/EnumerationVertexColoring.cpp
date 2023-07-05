@@ -5,7 +5,7 @@
  *   Author: Zofia Glapa (zofia.glapa@student.uj.edu.pl)
  */
 
-#include <coloring/EnumerationVertexColoring.hpp>
+#include <coloring/ExactVertexColoring.hpp>
 #include <iostream>
 #include <limits>
 #include <networkit/auxiliary/BucketPQ.hpp>
